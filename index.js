@@ -101,6 +101,33 @@ const keys ={
 
 
 }
+function determineWinner({player, enemy,timerID}) {
+    clearTimeout(timerID);
+    document.querySelector('#displayText').style.display='flex';
+    if(player.health===enemy.health){
+        document.querySelector('#displayText').innerHTML='Tie';
+    }
+    else if(player.health>enemy.health){
+        document.querySelector('#displayText').innerHTML='Player1 Wins';
+    }
+    else if(player.health<enemy.health){
+        document.querySelector('#displayText').innerHTML='Player2 Wins';
+    }
+}
+
+let timer = 60;
+let timerID;
+function decreaseTimer() {
+    if(timer>0){
+        timerID=setTimeout(decreaseTimer,1000)
+        timer--
+        document.querySelector('#timer').innerHTML = timer;
+    }
+    if(timer==0){
+        determineWinner({player, enemy,timerID})
+    }
+}
+decreaseTimer();
 function rectangularCollision({rectangle1,rectangle2}){
     return(
     rectangle1.attackBox.position.x+rectangle1.attackBox.width>=rectangle2.position.x  &&
@@ -143,6 +170,12 @@ function animate(){
         console.log("toucheV2")
         player.health-=20
         document.querySelector('#playerHealth').style.width=player.health +"%"
+    }
+    //  end the game base on health
+    if(player.health<=0||enemy.health<=0){
+
+
+        determineWinner({player, enemy,timerID})
     }
 }
 animate();
